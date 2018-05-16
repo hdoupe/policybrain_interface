@@ -305,19 +305,3 @@ def reform_warnings_errors(user_mods):
     except ValueError as valerr_msg:
         rtn_dict['ogusa']['errors'] = valerr_msg.__str__()
     return rtn_dict
-
-# if __name__ == '__main__':
-#     specs = Specifications(2017)
-#     specs._ignore_errors = True
-#     reform = {
-#         "tG1": [50],
-#         "T": [80]
-#     }
-#     specs.update_specifications(reform, raise_errors=False)
-#     print('errors', specs.parameter_errors)
-#     print('warnings', specs.parameter_warnings)
-#
-#     for name in specs._vals:
-#         item = getattr(specs, name[1:], None)
-#         if item is not None:
-#             print(name, item)
