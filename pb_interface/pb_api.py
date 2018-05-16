@@ -5,12 +5,9 @@ import six
 import re
 import numpy as np
 
-from taxcalc.growfactors import Growfactors
-from taxcalc.policy import Policy
-
-import ogusa
-from ogusa.parametersbase import ParametersBase
-from ogusa import elliptical_u_est
+# import ogusa
+from pb_interface.parametersbase import ParametersBase
+# from ogusa import elliptical_u_est
 
 class Specifications(ParametersBase):
     DEFAULTS_FILENAME = 'default_parameters.json'
@@ -44,10 +41,10 @@ class Specifications(ParametersBase):
         """
         Does cheap calculations such as calculating/applying growth rates
         """
-        self.b_ellipse, self.upsilon = elliptical_u_est.estimation(
-            self.frisch[0],
-            self.ltilde[0]
-        )
+        # self.b_ellipse, self.upsilon = elliptical_u_est.estimation(
+        #     self.frisch[0],
+        #     self.ltilde[0]
+        # )
         #call some more functions
         pass
 
@@ -98,7 +95,7 @@ class Specifications(ParametersBase):
     @staticmethod
     def read_json_param_objects(revision):
         """
-        Read JSON file and convert to dictionary 
+        Read JSON file and convert to dictionary
         """
         # next process first reform parameter
         if revision is None:

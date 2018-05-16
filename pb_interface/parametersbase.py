@@ -11,7 +11,6 @@ import abc
 import ast
 import collections as collect
 import numpy as np
-from taxcalc.utils import read_egg_json
 
 
 class ParametersBase(object):
@@ -90,10 +89,6 @@ class ParametersBase(object):
             with open(path) as pfile:
                 params_dict = json.load(pfile,
                                         object_pairs_hook=collect.OrderedDict)
-        else:
-            # cannot call read_egg_ function in unit tests
-            params_dict = read_egg_json(
-                cls.DEFAULTS_FILENAME)  # pragma: no cover
         return params_dict
 
     def _update(self, mods):
