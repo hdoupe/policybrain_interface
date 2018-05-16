@@ -11,3 +11,5 @@ pb_interface.parametersbase.ParametersBase
 ------------------------------------------
 
 .. autoclass:: pb_interface.parametersbase.ParametersBase
+   :members:
+   :exclude-members:
