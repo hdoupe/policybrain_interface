@@ -63,6 +63,43 @@ Returns
 params: dictionary of data</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="pb_interface.parametersbase.ParametersBase.initialize">
+<code class="descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pb_interface/parametersbase.html#ParametersBase.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pb_interface.parametersbase.ParametersBase.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called from subclass __init__ function.</p>
+<p>Added expand=True option to turn off expansion of arrays</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pb_interface.parametersbase.ParametersBase.set_default_vals">
+<code class="descname">set_default_vals</code><span class="sig-paren">(</span><em>known_years=999999</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pb_interface/parametersbase.html#ParametersBase.set_default_vals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pb_interface.parametersbase.ParametersBase.set_default_vals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called by initialize method and from some subclass methods.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pb_interface.parametersbase.ParametersBase.simple_eval">
+<code class="descname">simple_eval</code><span class="sig-paren">(</span><em>param_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pb_interface/parametersbase.html#ParametersBase.simple_eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pb_interface.parametersbase.ParametersBase.simple_eval" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Parses <cite>param_string</cite> and returns result. <a href="#id2"><span class="problematic" id="id3">`</span></a>param_string can be either:</dt>
+<dd><ol class="first last arabic simple">
+<li><dl class="first docutils">
+<dt><cite>param_name op scalar</cite> – this will be parsed into param, op, and scalar</dt>
+<dd>where <cite>op</cite> is a key in <cite>OP_DICT</cite>. The corresponding function is
+applied to the parameter value and the scalar value.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>param_name</cite> – simply return the parameter value that is retrieved</dt>
+<dd>from the object</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+<p>param_string : string of form <cite>param op scalar</cite> or <cite>param</cite></p>
+<p>float used for validation</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
