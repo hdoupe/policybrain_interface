@@ -20,9 +20,10 @@ Contents
 .. toctree::
    :maxdepth: 1
    :caption: API
-   
-   interface
+
    policybrain-api
+   ogusa-parameters
+   interface
 
 
 Indices and tables
