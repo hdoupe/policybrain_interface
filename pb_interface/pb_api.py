@@ -51,11 +51,14 @@ def to_json_reform(raw_web_input, **meta_information):
     Notes
     -----
     It will be difficult to decide the hand-off here.
+
     Option 1: send the raw input to the model (after checking to see if
-            it is malicious).
+    it is malicious).
+
     Option 2: PolicyBrain is responsible to parsing it to close to the upstream
-            project's desired data types (as done in
-            PolicyBrain-param_formatters.parse_value)
+    project's desired data types (as done in
+    PolicyBrain-param_formatters.parse_value)
+
     Option 2 needs to be done on the server on which this language-specific
     process is running. If it is done on the webserver, then we would either
     have to parse it into a close Python type and then serialize it before
