@@ -1,7 +1,7 @@
 .. _policybrain-api-ex:
 
 PolicyBrain API Example Implementation
-=======================
+======================================
 
 **PolicyBrain API OG-USA example**
 
