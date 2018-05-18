@@ -23,15 +23,22 @@ def to_json_reform(raw_web_input, **meta_information):
     PolicyBrain implementation does:
 
     with start_year = 2017 and cls = taxcalc.Policy convert
+
+    ```
     fields = {'_CG_nodiff': [False]},
               '_FICA_ss_trt': ["*", 0.1, "*", 0.2],
               '_ID_Charity_c_cpi': True,
               '_EITC_rt_2kids': [1.0]}
+    ```
+
     to
+
+    ```
     reform = {'_CG_nodiff': {'2017': [False]},
               '_FICA_ss_trt': {'2020': [0.2], '2018': [0.1]},
               '_ID_Charity_c_cpi': {'2017': True},
               '_EITC_rt_2kids': {'2017': [1.0]}}
+    ```
 
     Parameters
     ----------
@@ -84,7 +91,7 @@ def parameter_validation_messages(user_modifications):
     -----------
     user_modifications : dict created by read_json_param_objects
 
-    Return
+    Returns
     ------
     message_dict : dict with endpoint specific warning and error messages
     """
