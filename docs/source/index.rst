@@ -23,7 +23,7 @@ Contents
 
    policybrain-api
    ogusa-parameters
-   interface
+   parametersbase
 
 
 Indices and tables

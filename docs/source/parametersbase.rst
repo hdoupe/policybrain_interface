@@ -1,7 +1,7 @@
-.. _interface:
+.. _parametersbase:
 
-Interface
-=========
+ParametersBase
+==============
 
 .. currentmodule:: pb_interface.parametersbase
 
