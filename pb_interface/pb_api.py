@@ -18,7 +18,7 @@ def default_data(meta_information):
 def to_json_reform(raw_web_input, **meta_information):
     """
     Read posted data and convert into desired format. The posted data is of the
-    format `{'parameter_name': string(value)}`. This data undergoes initial
+    format ``{'parameter_name': string(value)}``. This data undergoes initial
     validation by PolicyBrain to make sure it is not malicious. The current
     PolicyBrain implementation does:
 
@@ -61,7 +61,7 @@ def to_json_reform(raw_web_input, **meta_information):
     have to parse it into a close Python type and then serialize it before
     sending it to the cluster gateway or we would have to parse the input
     values in the cluster gateway before handing the input off to
-    `to_json_reform`.
+    ``to_json_reform``.
 
     If we decide to parse it to a close Python object type, then there are
     some interesting projects that may be able to help serialize with out
@@ -71,7 +71,7 @@ def to_json_reform(raw_web_input, **meta_information):
 
 def read_json_param_objects(*json_objects):
     """
-    Read JSON file (as created in `to_json_reform`) and convert to to be
+    Read JSON file (as created in ``to_json_reform``) and convert to to be
     validated and submitted to the run endpoint
 
     Returns
@@ -83,7 +83,7 @@ def read_json_param_objects(*json_objects):
 def parameter_validation_messages(user_modifications):
     """
     Generate warnings and errors for parameter specifications (as created by
-    `read_json_param_objects`)
+    ``read_json_param_objects``)
 
     Parameters
     -----------
@@ -101,7 +101,7 @@ def run_endpoint_suffix(user_modifications):
 
     Parameters
     -----------
-    user_modifications: as created in `read_json_param_objects`
+    user_modifications: as created in ``read_json_param_objects``
 
     Returns
     --------
