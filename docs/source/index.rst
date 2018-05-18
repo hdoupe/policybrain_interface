@@ -14,10 +14,13 @@ provides these endpoints it can easily be stood up.
 *   list some reasons for why this could be good...
 
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Contents
+--------
 
+.. toctree::
+   :maxdepth: 1
+   :caption: API
+   
    interface
    policybrain-api
 
