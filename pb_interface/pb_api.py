@@ -22,11 +22,12 @@ def to_json_reform(raw_web_input, **meta_information):
     validation by PolicyBrain to make sure it is not malicious. The current
     PolicyBrain implementation does:
 
-    with start_year = 2017 and cls = taxcalc.Policy convert
+    with ``start_year = 2017`` and ``cls = taxcalc.Policy`` convert
 
     .. code-block:: python
+
         fields = {
-            '_CG_nodiff': [False]},
+            '_CG_nodiff': [False],
             '_FICA_ss_trt': ["*", 0.1, "*", 0.2],
             '_ID_Charity_c_cpi': True,
             '_EITC_rt_2kids': [1.0]
@@ -35,6 +36,7 @@ def to_json_reform(raw_web_input, **meta_information):
     to
 
     .. code-block:: python
+    
         reform = {
             '_CG_nodiff': {'2017': [False]},
             '_FICA_ss_trt': {'2020': [0.2], '2018': [0.1]},
@@ -94,7 +96,7 @@ def parameter_validation_messages(user_modifications):
 
     Parameters
     -----------
-    user_modifications : dict created by read_json_param_objects
+    user_modifications : dict with user modified parameters
 
     Returns
     ------
@@ -104,11 +106,12 @@ def parameter_validation_messages(user_modifications):
 
 def run_endpoint_suffix(user_modifications):
     """
-    An endpoint for PB to submit validated user specified parameters
+    An endpoint for PB to submit validated user specified parameters (as
+    created in ``read_json_reform``)
 
     Parameters
     -----------
-    user_modifications: as created in ``read_json_param_objects``
+    user_modifications: dict with user modified parameters
 
     Returns
     --------
