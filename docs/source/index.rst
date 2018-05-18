@@ -19,6 +19,7 @@ provides these endpoints it can easily be stood up.
    :caption: Contents:
 
    interface
+   policybrain-api
 
 
 Indices and tables
