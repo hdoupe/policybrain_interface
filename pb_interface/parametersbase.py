@@ -15,9 +15,8 @@ import numpy as np
 
 class ParametersBase(object):
     """
-    Inherit from this class for Policy, Behavior, Consumption, Growdiff, and
-    other groups of parameters that need to have a set_year method.
-    Override this __init__ method and DEFAULTS_FILENAME.
+    Inherit from this class for OG-USA parameter classes. Override this
+    __init__ method and DEFAULTS_FILENAME.
     """
     __metaclass__ = abc.ABCMeta
 
