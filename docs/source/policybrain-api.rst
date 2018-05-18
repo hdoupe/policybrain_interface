@@ -1,7 +1,7 @@
 .. _policybrain-api:
 
-Interface
-=========
+PolicyBrain API
+===============
 
 .. currentmodule:: pb_interface.pb_api
 
