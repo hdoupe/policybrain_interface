@@ -366,19 +366,15 @@ class Specifications(ParametersBase):
 # changes
 def reform_warnings_errors(user_mods):
     """
-    The reform_warnings_errors function assumes user_mods is a dictionary
-    returned by the Calculator.read_json_param_objects() function.
-    This function returns a dictionary containing two STR:STR pairs:
-    {'warnings': '<empty-or-message(s)>', 'errors': '<empty-or-message(s)>'}
-    In each pair the second string is empty if there are no messages.
-    Any returned messages are generated using current_law_policy.json
-    information on known policy parameter names and parameter value ranges.
-    Note that this function will return one or more error messages if
-    the user_mods['policy'] dictionary contains any unknown policy
-    parameter names or if any *_cpi parameters have values other than
-    True or False.  These situations prevent implementing the policy
-    reform specified in user_mods, and therefore, no range-related
-    warnings or errors will be returned in this case.
+    Generate warnings and errors for OG-USA parameter specifications
+
+    Parameters:
+    -----------
+    user_mods : dict created by read_json_param_objects
+
+    Return
+    ------
+    rtn_dict : dict with endpoint specific warning and error messages
     """
     rtn_dict = {'ogusa': {'warnings': '', 'errors': ''}}
 
