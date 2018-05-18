@@ -1,390 +1,117 @@
-import json
-import os
-import collections as collect
-import six
-import re
-import numpy as np
-
-# import ogusa
-from pb_interface.parametersbase import ParametersBase
-# from ogusa import elliptical_u_est
-
-class Specifications(ParametersBase):
+def default_data(meta_information):
     """
-    Inherits ParametersBase. Implements the PolicyBrain API for OG-USA
+    Return parameter data read from JSON file.
+
+    Parameters
+    ----------
+    metadata: boolean
+            include extra parameter information or just the default values
+    **meta_information: keyword arguments specifying required configuration
+            parameters. EX: start_year, country
+
+    Returns
+    -------
+    params: dictionary of data
     """
-    DEFAULTS_FILENAME = 'default_parameters.json'
+    pass
 
-    def __init__(self,
-                 initial_estimates=False):
-        super(Specifications, self).__init__()
-
-        # reads in default data
-        self._vals = self._params_dict_from_json_file()
-
-        # does cheap calculations such as growth
-        self.initialize(initial_estimates=False)
-
-        self.parameter_warnings = ''
-        self.parameter_errors = ''
-        self._ignore_errors = False
-
-    def initialize(self, initial_estimates=False):
-        """
-        ParametersBase reads JSON file and sets attributes to self
-        Next call self.ogusa_set_default_vals for further initialization
-        If estimate_params is true, then run long running estimation routines
-
-        Parameters:
-        -----------
-        initial_estimates: boolean that indicates whether to do long-running
-                estimation routines or not
-        """
-        super(Specifications, self).initialize()
-        self.ogusa_set_default_vals()
-        if initial_estimates:
-            self.estimate_parameters()
-
-    def ogusa_set_default_vals(self):
-        """
-        Does cheap calculations such as calculating/applying growth rates
-
-        """
-        # self.b_ellipse, self.upsilon = elliptical_u_est.estimation(
-        #     self.frisch[0],
-        #     self.ltilde[0]
-        # )
-        #call some more functions
-        pass
-
-    def estimate_parameters(self, data=None, reform={}):
-        """
-        Runs long running parameter estimatation routines such as estimating
-        tax function parameters
-
-        Parameters:
-        ------------
-        data: not sure what this is yet...
-
-        reform: Tax-Calculator Policy reform
-
-        Returns:
-        --------
-        nothing: void
-
-        """
-        # self.tax_func_estimate = tax_func_estimate(self.BW, self.S, self.starting_age, self.ending_age,
-        #                                 self.start_year, self.baseline,
-        #                                 self.analytical_mtrs, self.age_specific,
-        #                                 reform=None, data=data)
-        pass
-
-    def default_parameters(self):
-        """
-        Return Policy object same as self except with current-law policy.
-
-        Returns
-        -------
-        Specifications: Specifications instance with the default configuration
-        """
-        dp = Specifications()
-        return dp
-
-    def update_specifications(self, revision, raise_errors=True):
-        """
-        Updates parameter specification with values in revision dictionary
-
-        Parameters
-        ----------
-        reform: dictionary of one or more PARAM:VALUE pairs
-
-        raise_errors: boolean
-            if True (the default), raises ValueError when parameter_errors
-                    exists;
-            if False, does not raise ValueError when parameter_errors exists
-                    and leaves error handling to caller of
-                    update_specifications.
-
-        Raises
-        ------
-        ValueError:
-            if raise_errors is True AND
-              _validate_parameter_names_types generates errors OR
-              _validate_parameter_values generates errors.
-
-        Returns
-        -------
-        nothing: void
-
-        Notes
-        -----
-        Given a reform dictionary, typical usage of the Policy class
-        is as follows::
-
-            specs = Specifications()
-            specs.update_specifications(reform)
-
-        An example of a multi-parameter specification is as follows::
-
-            spec = {
-                frisch: [0.03]
-            }
-
-        This method was adapted from the Tax-Calculator
-        behavior.py-update_behavior method.
-        """
-        # check that all revisions dictionary keys are integers
-        if not isinstance(revision, dict):
-            raise ValueError('ERROR: revision is not a dictionary')
-        if not revision:
-            return  # no revision to implement
-        revision_years = sorted(list(revision.keys()))
-        # check range of remaining revision_years
-        # validate revision parameter names and types
-        self.parameter_errors = ''
-        self.parameter_warnings = ''
-        self._validate_parameter_names_types(revision)
-        if not self._ignore_errors and self.parameter_errors:
-            raise ValueError(self.parameter_errors)
-        # implement the revision
-        revision_parameters = set()
-        revision_parameters.update(revision.keys())
-        self._update(revision)
-        # validate revision parameter values
-        self._validate_parameter_values(revision_parameters)
-        if self.parameter_errors and raise_errors:
-            raise ValueError('\n' + self.parameter_errors)
-
-    @staticmethod
-    def read_json_param_objects(revision):
-        """
-        Read JSON file and convert to dictionary
-
-        Returns
-        -------
-        rev_dict: Formatted dictionary
-        """
-        # next process first reform parameter
-        if revision is None:
-            rev_dict = dict()
-        elif isinstance(revision, six.string_types):
-            if os.path.isfile(revision):
-                txt = open(revision, 'r').read()
-            else:
-                txt = revision
-            # strip out //-comments without changing line numbers
-            json_str = re.sub('//.*', ' ', txt)
-            # convert JSON text into a Python dictionary
-            try:
-                rev_dict = json.loads(json_str)
-            except ValueError as valerr:
-                msg = 'Policy reform text below contains invalid JSON:\n'
-                msg += str(valerr) + '\n'
-                msg += 'Above location of the first error may be approximate.\n'
-                msg += 'The invalid JSON reform text is between the lines:\n'
-                bline = 'XX----.----1----.----2----.----3----.----4'
-                bline += '----.----5----.----6----.----7'
-                msg += bline + '\n'
-                linenum = 0
-                for line in json_str.split('\n'):
-                    linenum += 1
-                    msg += '{:02d}{}'.format(linenum, line) + '\n'
-                msg += bline + '\n'
-                raise ValueError(msg)
-        else:
-            raise ValueError('reform is neither None nor string')
-
-        return rev_dict
-
-    def _validate_parameter_names_types(self, revision):
-        """
-        Check validity of parameter names and parameter types used
-        in the specified revision dictionary.
-
-        Parameters
-        ----------
-        revision: parameter dictionary of form {parameter_name: [value]}
-
-        Returns:
-        --------
-        nothing: void
-
-        Notes
-        -----
-        copied from taxcalc.Behavior._validate_parameter_names_types
-        """
-        # pylint: disable=too-many-branches,too-many-nested-blocks
-        # pylint: disable=too-many-locals
-        param_names = set(self._vals.keys())
-        for name in revision:
-            if name not in param_names:
-                msg = '{} unknown parameter name'
-                self.parameter_errors += (
-                    'ERROR: ' + msg.format(name) + '\n'
-                )
-            else:
-                # check parameter value type avoiding use of isinstance
-                # because isinstance(True, (int,float)) is True, which
-                # makes it impossible to check float parameters
-                bool_param_type = self._vals[name]['boolean_value']
-                int_param_type = self._vals[name]['integer_value']
-                assert isinstance(revision[name], list)
-                pvalue = revision[name][0]
-                if isinstance(pvalue, list):
-                    scalar = False  # parameter value is a list
-                else:
-                    scalar = True  # parameter value is a scalar
-                    pvalue = [pvalue]  # make scalar a single-item list
-                # pylint: disable=consider-using-enumerate
-                for idx in range(0, len(pvalue)):
-                    if scalar:
-                        pname = name
-                    else:
-                        pname = '{}_{}'.format(name, idx)
-                    pval = pvalue[idx]
-                    # pylint: disable=unidiomatic-typecheck
-                    pval_is_bool = type(pval) == bool
-                    pval_is_int = type(pval) == int
-                    pval_is_float = type(pval) == float
-                    if bool_param_type:
-                        if not pval_is_bool:
-                            msg = '{} value {} is not boolean'
-                            self.parameter_errors += (
-                                'ERROR: ' +
-                                msg.format(pname, pval) +
-                                '\n'
-                            )
-                    elif int_param_type:
-                        if not pval_is_int:  # pragma: no cover
-                            msg = '{} value {} is not integer'
-                            self.parameter_errors += (
-                                'ERROR: ' +
-                                msg.format(pname, pval) +
-                                '\n'
-                            )
-                    else:  # param is float type
-                        if not (pval_is_int or pval_is_float):
-                            msg = '{} value {} is not a number'
-                            self.parameter_errors += (
-                                'ERROR: ' +
-                                msg.format(pname, pval) +
-                                '\n'
-                            )
-        del param_names
-
-
-    def _validate_parameter_values(self, parameters_set):
-        """
-        Check values of parameters in specified parameter_set using
-        range information from the current_law_policy.json file.
-
-        Parameters:
-        -----------
-        parameters_set: set of parameters whose values need to be validated
-
-        Returns:
-        --------
-        nothing: void
-
-        Notes
-        -----
-        copied from taxcalc.Policy._validate_parameter_values
-        """
-        # pylint: disable=too-many-locals
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-nested-blocks
-        rounding_error = 100.0
-        # above handles non-rounding of inflation-indexed parameter values
-        dp = self.default_parameters()
-        parameters = sorted(parameters_set)
-        for pname in parameters:
-            ###################################
-            # don't need this part
-            # if pname.endswith('_cpi'):
-            #     continue  # *_cpi parameter values validated elsewhere
-            ###################################
-            pvalue = getattr(self, pname)
-            for vop, vval in self._vals[pname]['range'].items():
-                if isinstance(vval, six.string_types):
-                    if vval == 'default':
-                        vvalue = getattr(dp, pname)
-                        if vop == 'min':
-                            vvalue -= rounding_error
-                        # the follow branch can never be reached, so it
-                        # is commented out because it can never be tested
-                        # (see test_range_infomation in test_policy.py)
-                        # --> elif vop == 'max':
-                        # -->    vvalue += rounding_error
-                    else:
-                        vvalue = self.simple_eval(vval)
-                else:
-                    vvalue = np.full(pvalue.shape, vval)
-                assert pvalue.shape == vvalue.shape
-                assert len(pvalue.shape) <= 2
-                if len(pvalue.shape) == 2:
-                    scalar = False  # parameter value is a list
-                else:
-                    scalar = True  # parameter value is a scalar
-                for idx in np.ndindex(pvalue.shape):
-                    out_of_range = False
-                    if vop == 'min' and pvalue[idx] < vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} value {} < min value {}'
-                        extra = self._vals[pname]['out_of_range_minmsg']
-                        if extra:
-                            msg += ' {}'.format(extra)
-                    if vop == 'max' and pvalue[idx] > vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} value {} > max value {}'
-                        extra = self._vals[pname]['out_of_range_maxmsg']
-                        if extra:
-                            msg += ' {}'.format(extra)
-                    if out_of_range:
-                        action = self._vals[pname]['out_of_range_action']
-                        if scalar:
-                            name = pname
-                        else:
-                            name = '{}_{}'.format(pname, idx[1])
-                            if extra:
-                                msg += '_{}'.format(idx[1])
-                        if action == 'warn':
-                            self.parameter_warnings += (
-                                'WARNING: ' + msg.format(name,
-                                                         pvalue[idx],
-                                                         vvalue[idx]) + '\n'
-                            )
-                        if action == 'stop':
-                            self.parameter_errors += (
-                                'ERROR: ' + msg.format(name,
-                                                       pvalue[idx],
-                                                       vvalue[idx]) + '\n'
-                            )
-        del dp
-        del parameters
-
-# copied from taxcalc.tbi.tbi.reform_errors_warnings--probably needs further
-# changes
-def reform_warnings_errors(user_mods):
+def to_json_reform(raw_web_input, **meta_information):
     """
-    Generate warnings and errors for OG-USA parameter specifications
+    Read posted data and convert into desired format. The posted data is of the
+    format {'parameter_name': string(value)}. This data undergoes initial
+    validation by PolicyBrain to make sure it is not malicious. The current
+    PolicyBrain implementation does:
 
-    Parameters:
+    with start_year = 2017 and cls = taxcalc.Policy convert
+    fields = {'_CG_nodiff': [False]},
+              '_FICA_ss_trt': ["*", 0.1, "*", 0.2],
+              '_ID_Charity_c_cpi': True,
+              '_EITC_rt_2kids': [1.0]}
+    to
+    reform = {'_CG_nodiff': {'2017': [False]},
+              '_FICA_ss_trt': {'2020': [0.2], '2018': [0.1]},
+              '_ID_Charity_c_cpi': {'2017': True},
+              '_EITC_rt_2kids': {'2017': [1.0]}}
+
+    Parameters
+    ----------
+    raw_web_input: dictionary of data posted by the GUI
+
+    **meta_information: same keywords as default_data
+
+    Returns
+    -------
+    json_string: JSON specification object
+
+    Notes
+    -----
+    It will be difficult to decide the hand-off here.
+    Option 1: send the raw input to the model (after checking to see if
+            it is malicious).
+    Option 2: PolicyBrain is responsible to parsing it to close to the upstream
+            project's desired data types (as done in
+            PolicyBrain-param_formatters.parse_value)
+    Option 2 needs to be done on the server on which this language-specific
+    process is running. If it is done on the webserver, then we would either
+    have to parse it into a close Python type and then serialize it before
+    sending it to the cluster gateway or we would have to parse the input
+    values in the cluster gateway before handing the input off to
+    `to_json_reform`.
+
+    If we decide to parse it to a close Python object type, then there are
+    some interesting projects that may be able to help serialize with out
+    losing information about the object's data type.
+    """
+    pass
+
+def read_json_param_objects(*json_objects):
+    """
+    Read JSON file (as created in `to_json_reform`) and convert to to be
+    validated and submitted to the run endpoint
+
+    Returns
+    -------
+    param_dict: formatted dictionary
+    """
+    pass
+
+def parameter_validation_messages(user_modifications):
+    """
+    Generate warnings and errors for parameter specifications (as created by
+    `read_json_param_objects`)
+
+    Parameters
     -----------
-    user_mods : dict created by read_json_param_objects
+    user_modifications : dict created by read_json_param_objects
 
     Return
     ------
-    rtn_dict : dict with endpoint specific warning and error messages
+    message_dict : dict with endpoint specific warning and error messages
     """
-    rtn_dict = {'ogusa': {'warnings': '', 'errors': ''}}
+    pass
 
-    # create Specifications object and implement reform
-    specs = Specifications(2017)
-    specs._ignore_errors = True
-    try:
-        specs.update_specifications(user_mods['ogusa'], raise_errors=False)
-        rtn_dict['ogusa']['warnings'] = specs.parameter_warnings
-        rtn_dict['ogusa']['errors'] = specs.parameter_errors
-    except ValueError as valerr_msg:
-        rtn_dict['ogusa']['errors'] = valerr_msg.__str__()
-    return rtn_dict
+def run_endpoint_suffix(user_modifications):
+    """
+    An endpoint for PB to submit validated user specified parameters
+
+    Parameters
+    -----------
+    user_modifications: as created in `read_json_param_objects`
+
+    Returns
+    --------
+    results: dictionary of results
+
+    Notes:
+    ------
+    The tricky part here is figuring out how to compress and serialize this
+    data so that it can be delivered back to the user. Is this the upstream
+    project's responsibility or PolicyBrain's responsibility?
+
+    This function may be wrapped in another function that:
+        - Establishes cluster and redis/message service network connection
+        - Marks the job status
+        - Responds to queries
+        - Serializes results?
+    """
+    pass

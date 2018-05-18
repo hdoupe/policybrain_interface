@@ -22,6 +22,7 @@ Contents
    :caption: API
 
    policybrain-api
+   policybrain-api-ex
    ogusa-parameters
    parametersbase
 

@@ -3,12 +3,12 @@
 OG-USA Parameters Class
 =======================
 
-.. currentmodule:: pb_interface.pb_api
+.. currentmodule:: pb_interface.pb_api_ex
 
 **Specifications**
 
-pb_interface.pb_api.Specifications
+pb_interface.pb_api_ex.Specifications
 ------------------------------------------
 
-.. autoclass:: pb_interface.pb_api.Specifications
+.. autoclass:: pb_interface.pb_api_ex.Specifications
    :members:
