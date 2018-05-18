@@ -36,7 +36,7 @@ def to_json_reform(raw_web_input, **meta_information):
     to
 
     .. code-block:: python
-    
+
         reform = {
             '_CG_nodiff': {'2017': [False]},
             '_FICA_ss_trt': {'2020': [0.2], '2018': [0.1]},
@@ -99,7 +99,7 @@ def parameter_validation_messages(user_modifications):
     user_modifications : dict with user modified parameters
 
     Returns
-    ------
+    --------
     message_dict : dict with endpoint specific warning and error messages
     """
     pass
