@@ -27,10 +27,13 @@ class ParametersBase(object):
     def default_data(cls, metadata=False):
         """
         Return parameter data read from the subclass's json file.
+
         Parameters
         ----------
         metadata: boolean
+
         start_year: int or None
+
         Returns
         -------
         params: dictionary of data
@@ -173,6 +176,7 @@ class ParametersBase(object):
                     applied to the parameter value and the scalar value.
             2. `param_name` -- simply return the parameter value that is retrieved
                     from the object
+
         Parameters
         ----------
         param_string : string of form `param op scalar` or `param`
